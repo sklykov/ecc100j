@@ -22,6 +22,8 @@ public class ECC100Controller
 	private HashBasedTable<Integer, Integer, ECC100Axis> mDeviceIdAxisIndexToAxisMap = HashBasedTable.create();
 	private int mNumberOfControllers;
 
+	private volatile boolean mIsOpened = false;
+
 	public ECC100Controller()
 	{
 		super();
@@ -66,16 +68,43 @@ public class ECC100Controller
 			}
 		}
 
+		Runtime.getRuntime().addShutdownHook(new Thread()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{
+					close();
+				}
+				catch (Throwable e)
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+
+		mIsOpened = true;
 		return true;
 	}
 
 	public void close()
 	{
+		if (!mIsOpened)
+			return;
+
+		for (ECC100Axis lECC100Axis : mDeviceIdAxisIndexToAxisMap.values())
+		{
+			lECC100Axis.home();
+		}
+
 		for (Pointer<Integer> lPointerToControllerDeviceHandle : mPointerToDeviceHandleList)
 		{
 			EccLibrary.ECC_Close(lPointerToControllerDeviceHandle.getInt());
 			lPointerToControllerDeviceHandle.release();
 		}
+
+		mIsOpened = false;
 	}
 
 	protected int getControllerDeviceHandle(int pDeviceIndex)
