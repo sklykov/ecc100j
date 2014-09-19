@@ -1,12 +1,12 @@
 package ecc100.bindings;
 import java.util.Collections;
 import java.util.Iterator;
-
 import org.bridj.BridJ;
 import org.bridj.CRuntime;
 import org.bridj.FlagSet;
 import org.bridj.IntValuedEnum;
 import org.bridj.Pointer;
+import org.bridj.ann.Convention.Style;
 import org.bridj.ann.Convention;
 import org.bridj.ann.Library;
 import org.bridj.ann.Ptr;
@@ -17,11 +17,10 @@ import org.bridj.ann.Runtime;
  * a tool written by <a href="http://ochafik.com/">Olivier Chafik</a> that <a href="http://code.google.com/p/jnaerator/wiki/CreditsAndLicense">uses a few opensource projects.</a>.<br>
  * For help, please visit <a href="http://nativelibs4java.googlecode.com/">NativeLibs4Java</a> or <a href="http://bridj.googlecode.com/">BridJ</a> .
  */
-@Library("ecc")
+@Library("ecc") 
 @Runtime(CRuntime.class) 
 public class EccLibrary {
 	static {
-		BridJ.addNativeLibraryDependencies("libusb0");
 		BridJ.register();
 	}
 	/**

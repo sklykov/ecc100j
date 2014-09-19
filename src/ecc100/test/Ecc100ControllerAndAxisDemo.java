@@ -20,7 +20,10 @@ public class Ecc100ControllerAndAxisDemo
 		assertTrue(lECC100Controller.open());
 
 		List<Integer> lDeviceIdList = lECC100Controller.getDeviceIdList();
+		System.out.println("lDeviceIdList=" + lDeviceIdList);
 		assertTrue(lDeviceIdList.size() > 0);
+
+
 
 		int lDeviceId = lDeviceIdList.get(0);
 		ECC100Axis lAxis = lECC100Controller.getAxis(lDeviceId, 0);

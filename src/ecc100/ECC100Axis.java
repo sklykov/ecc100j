@@ -14,7 +14,9 @@ public class ECC100Axis
 	private Pointer<Integer> mPointerToDeviceHandle = Pointer.allocateInt();
 	private int mAxisIndex;
 	private boolean mLocked = false;
-	
+	private volatile double mLastTargetPositionInMicrons;
+	private volatile double pLastEpsilonInMicrons;
+
 	public ECC100Axis(ECC100Controller pECC100Controller,
 										int pDeviceIndex,
 										int pAxisIndex)
@@ -92,35 +94,43 @@ public class ECC100Axis
 		controlAproachToTargetPosition(false);
 	}
 
-	public void goToPosition(double pTargetPosition, double pEpsilon)
+	public void goToPosition(	double pTargetPositionInMicrons,
+														double pEpsilonInMicrons)
 	{
 		enable();
-		setTargetPosition((int) pTargetPosition);
+		setTargetPosition(pTargetPositionInMicrons);
 	}
 
-	public void goToPositionAndWait(double pTargetPosition)
+	public void goToPositionAndWait(double pTargetPositionInMicrons)
 	{
-		goToPositionAndWait(pTargetPosition,
+		goToPositionAndWait(pTargetPositionInMicrons,
 												cGoToEpsilon,
 												1,
 												TimeUnit.MINUTES);
 	}
 
-	public boolean goToPositionAndWait(double pTargetPosition,
-														double pEpsilon,
-														long pTimeOut,
-														TimeUnit pTimeUnit)
+	public boolean goToPositionAndWait(	double pTargetPositionInMicrons,
+																			double pEpsilonInMicrons,
+																			long pTimeOut,
+																			TimeUnit pTimeUnit)
 	{
 		enable();
-		setTargetPosition((int) pTargetPosition);
-		return waitToArriveAt(pTargetPosition,
-													pEpsilon,
+		setTargetPosition(pTargetPositionInMicrons);
+		mLastTargetPositionInMicrons = pTargetPositionInMicrons;
+		pLastEpsilonInMicrons = pEpsilonInMicrons;
+		return waitToArriveAt(pTargetPositionInMicrons,
+													pEpsilonInMicrons,
 													pTimeOut,
 													pTimeUnit);
 	}
 
-	private boolean waitToArriveAt(	double pTargetPosition,
-																	double pEpsilon,
+	public boolean hasArrived()
+	{
+		return abs(getCurrentPosition() - mLastTargetPositionInMicrons) < pLastEpsilonInMicrons;
+	}
+
+	private boolean waitToArriveAt(	double pTargetPositionInMicrons,
+																	double pEpsilonInMicrons,
 																	long pTimeOut,
 																	TimeUnit pTimeUnit)
 	{
@@ -129,7 +139,7 @@ public class ECC100Axis
 
 		long lDeadLine = System.nanoTime() + TimeUnit.NANOSECONDS.convert(pTimeOut,
 																																			pTimeUnit);
-		while (!isReady() && abs(getCurrentPosition() - pTargetPosition) > pEpsilon)
+		while (!isReady() && !hasArrived())
 		{
 			try
 			{
@@ -148,10 +158,10 @@ public class ECC100Axis
 		return true;
 	}
 
-	public void setTargetPosition(int lTargetPosition)
+	public void setTargetPosition(double lTargetPositionInMicrons)
 	{
 		Pointer<Integer> lPointerToTarget = Pointer.allocateInt();
-		lPointerToTarget.set(lTargetPosition + getReferencePosition());
+		lPointerToTarget.set((int) (lTargetPositionInMicrons * 1000 + getReferencePosition() * 1000));
 		EccLibrary.ECC_controlTargetPosition(	mPointerToDeviceHandle.getInt(),
 																					mAxisIndex,
 																					lPointerToTarget,
@@ -263,29 +273,31 @@ public class ECC100Axis
 		return lActorTypeInt;
 	}
 
-	public int getCurrentPosition()
+	public double getCurrentPosition()
 	{
 		Pointer<Integer> lCurrentPosition = Pointer.allocateInt();
 		EccLibrary.ECC_getPosition(	mPointerToDeviceHandle.getInt(),
 																mAxisIndex,
 																lCurrentPosition);
-		int lCurrentPositionInt = lCurrentPosition.getInt() - getReferencePosition();
+		double lCurrentPositionInt = lCurrentPosition.getInt() * 0.001
+																	- getReferencePosition();
 		lCurrentPosition.release();
 		return lCurrentPositionInt;
 	}
 
-	public int getReferencePosition()
+	public double getReferencePosition()
 	{
 		if (!isReferencePositionValid())
 			return 0;
 
 		Pointer<Integer> lReferencePosition = Pointer.allocateInt();
 		EccLibrary.ECC_getReferencePosition(mPointerToDeviceHandle.getInt(),
-																mAxisIndex,
+																				mAxisIndex,
 																				lReferencePosition);
 		int lReferencePositionInt = lReferencePosition.getInt();
+		double lReferencePositionInMicrons = lReferencePositionInt * 0.001;
 		lReferencePosition.release();
-		return lReferencePositionInt;
+		return lReferencePositionInMicrons;
 	}
 
 	public boolean isReferencePositionValid()
@@ -330,8 +342,5 @@ public class ECC100Axis
 	{
 		mLocked = pIsLocked;
 	}
-
-
-
 
 }
