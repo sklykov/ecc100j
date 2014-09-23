@@ -32,20 +32,21 @@ public class ECC100Controller
 	public boolean open()
 	{
 
-		Pointer<Pointer<EccInfo>> lPointerTopointerToInfoStruct = Pointer.allocatePointers(	EccInfo.class,
-																																												4);
+		Pointer<Pointer<EccInfo>> lPointerToPointerToInfoStruct = Pointer.allocatePointers(	EccInfo.class,
+																																												cMaxNumberOfControllers);
 		for (int i = 0; i < cMaxNumberOfControllers; i++)
 		{
-			lPointerTopointerToInfoStruct.set(Pointer.allocate(EccInfo.class));
+			lPointerToPointerToInfoStruct.set(i,
+																				Pointer.allocate(EccInfo.class));
 		}
 
-		mNumberOfControllers = EccLibrary.ECC_Check(lPointerTopointerToInfoStruct);
+		mNumberOfControllers = EccLibrary.ECC_Check(lPointerToPointerToInfoStruct);
 
-		// System.out.println("mNumberOfControllers=" + mNumberOfControllers);
+		System.out.println("mNumberOfControllers=" + mNumberOfControllers);
 
 		for (int i = 0; i < mNumberOfControllers; i++)
 		{
-			Pointer<EccInfo> lPointerToInfoStruct = lPointerTopointerToInfoStruct.get(i);
+			Pointer<EccInfo> lPointerToInfoStruct = lPointerToPointerToInfoStruct.get(i);
 
 			if (lPointerToInfoStruct != null)
 			{

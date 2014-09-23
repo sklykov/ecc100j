@@ -20,7 +20,7 @@
  *  piezo controller.
  *  ECC100 devices can be searched by @ref ECC_Check, connected by @ref ECC_Connect
  *  and released by @ref ECC_Close functions.
- *  It is possible to handle multiple devices simultaneous. the @ref ECC_Connect 
+ *  It is possible to handle multiple devices simultaneously. the @ref ECC_Connect 
  *  function gives a unique handle for the selected device.
  *
  *  Functions that allow set and get operations are named ECC_control... .
@@ -38,7 +38,7 @@
  *  Defines functions for connecting and controlling the ECC100
  */
 /******************************************************************/
-/* $Id: ecc.h,v 1.11 2012/11/20 16:09:10 zaphod Exp $ */
+/* $Id: ecc.h,v 1.12 2013/12/18 14:25:39 trurl Exp $ */
 
 
 
@@ -602,8 +602,6 @@ Int32 NCB_API ECC_getStatusEotFwd( Int32 deviceHandle,
  *  @param  deviceHandle  Handle of device
  *  @param  axis          Number of the axis to be configured
  *  @param  EotDetected   status
- *  @param  set           1: Send the supplied values to the controller
- *                        0: Ignore input; only retreive the results
  *  @return               Result of function
  */
 Int32 NCB_API ECC_getStatusEotBkwd( Int32 deviceHandle,

@@ -670,11 +670,9 @@ public class EccLibrary {
 	 *  @param  deviceHandle  Handle of device<br>
 	 *  @param  axis          Number of the axis to be configured<br>
 	 *  @param  EotDetected   status<br>
-	 *  @param  set           1: Send the supplied values to the controller<br>
-	 *                        0: Ignore input; only retreive the results<br>
 	 *  @return               Result of function<br>
 	 * Original signature : <code>__attribute__((dllimport)) Int32 ECC_getStatusEotBkwd(Int32, Int32, Bln32*)</code><br>
-	 * <i>native declaration : lib\ecc100\ecc.h:609</i>
+	 * <i>native declaration : lib\ecc100\ecc.h:607</i>
 	 */
 	@Convention(Convention.Style.StdCall) 
 	public static int ECC_getStatusEotBkwd(int deviceHandle, int axis, Pointer<Integer > EotDetected) {
@@ -695,7 +693,7 @@ public class EccLibrary {
 	 *                        0: Ignore input; only retreive the results<br>
 	 *  @return               Result of function<br>
 	 * Original signature : <code>__attribute__((dllimport)) Int32 ECC_controlEotOutputDeactive(Int32, Int32, Bln32*, Bln32)</code><br>
-	 * <i>native declaration : lib\ecc100\ecc.h:625</i>
+	 * <i>native declaration : lib\ecc100\ecc.h:623</i>
 	 */
 	@Convention(Convention.Style.StdCall) 
 	public static int ECC_controlEotOutputDeactive(int deviceHandle, int axis, Pointer<Integer > enable, int set) {
@@ -715,7 +713,7 @@ public class EccLibrary {
 	 *                        0: Ignore input; only retreive the results<br>
 	 *  @return               Result of function<br>
 	 * Original signature : <code>__attribute__((dllimport)) Int32 ECC_controlFixOutputVoltage(Int32, Int32, Int32*, Bln32)</code><br>
-	 * <i>native declaration : lib\ecc100\ecc.h:644</i>
+	 * <i>native declaration : lib\ecc100\ecc.h:642</i>
 	 */
 	@Convention(Convention.Style.StdCall) 
 	public static int ECC_controlFixOutputVoltage(int deviceHandle, int axis, Pointer<Integer > voltage, int set) {
@@ -736,7 +734,7 @@ public class EccLibrary {
 	 *                        0: Ignore input; only retreive the results<br>
 	 *  @return               Result of function<br>
 	 * Original signature : <code>__attribute__((dllimport)) Int32 ECC_controlExtTrigger(Int32, Int32, Bln32*, Bln32)</code><br>
-	 * <i>native declaration : lib\ecc100\ecc.h:663</i>
+	 * <i>native declaration : lib\ecc100\ecc.h:661</i>
 	 */
 	@Convention(Convention.Style.StdCall) 
 	public static int ECC_controlExtTrigger(int deviceHandle, int axis, Pointer<Integer > enable, int set) {
@@ -757,7 +755,7 @@ public class EccLibrary {
 	 *                        0: Ignore input; only retreive the results<br>
 	 *  @return               Result of function<br>
 	 * Original signature : <code>__attribute__((dllimport)) Int32 ECC_controlAQuadBIn(Int32, Int32, Bln32*, Bln32)</code><br>
-	 * <i>native declaration : lib\ecc100\ecc.h:682</i>
+	 * <i>native declaration : lib\ecc100\ecc.h:680</i>
 	 */
 	@Convention(Convention.Style.StdCall) 
 	public static int ECC_controlAQuadBIn(int deviceHandle, int axis, Pointer<Integer > enable, int set) {
@@ -777,7 +775,7 @@ public class EccLibrary {
 	 *                        0: Ignore input; only retreive the results<br>
 	 *  @return               Result of function<br>
 	 * Original signature : <code>__attribute__((dllimport)) Int32 ECC_controlAQuadBInResolution(Int32, Int32, Int32*, Bln32)</code><br>
-	 * <i>native declaration : lib\ecc100\ecc.h:698</i>
+	 * <i>native declaration : lib\ecc100\ecc.h:696</i>
 	 */
 	@Convention(Convention.Style.StdCall) 
 	public static int ECC_controlAQuadBInResolution(int deviceHandle, int axis, Pointer<Integer > resolution, int set) {
@@ -798,7 +796,7 @@ public class EccLibrary {
 	 *                        0: Ignore input; only retreive the results<br>
 	 *  @return               Result of function<br>
 	 * Original signature : <code>__attribute__((dllimport)) Int32 ECC_controlAQuadBOut(Int32, Int32, Bln32*, Bln32)</code><br>
-	 * <i>native declaration : lib\ecc100\ecc.h:716</i>
+	 * <i>native declaration : lib\ecc100\ecc.h:714</i>
 	 */
 	@Convention(Convention.Style.StdCall) 
 	public static int ECC_controlAQuadBOut(int deviceHandle, int axis, Pointer<Integer > enable, int set) {
@@ -818,7 +816,7 @@ public class EccLibrary {
 	 *                        0: Ignore input; only retreive the results<br>
 	 *  @return               Result of function<br>
 	 * Original signature : <code>__attribute__((dllimport)) Int32 ECC_controlAQuadBOutResolution(Int32, Int32, Int32*, Bln32)</code><br>
-	 * <i>native declaration : lib\ecc100\ecc.h:732</i>
+	 * <i>native declaration : lib\ecc100\ecc.h:730</i>
 	 */
 	@Convention(Convention.Style.StdCall) 
 	public static int ECC_controlAQuadBOutResolution(int deviceHandle, int axis, Pointer<Integer > resolution, int set) {
@@ -838,7 +836,7 @@ public class EccLibrary {
 	 *                        0: Ignore input; only retreive the results<br>
 	 *  @return               Result of function<br>
 	 * Original signature : <code>__attribute__((dllimport)) Int32 ECC_controlAQuadBOutClock(Int32, Int32, Int32*, Bln32)</code><br>
-	 * <i>native declaration : lib\ecc100\ecc.h:748</i>
+	 * <i>native declaration : lib\ecc100\ecc.h:746</i>
 	 */
 	@Convention(Convention.Style.StdCall) 
 	public static int ECC_controlAQuadBOutClock(int deviceHandle, int axis, Pointer<Integer > clock, int set) {
