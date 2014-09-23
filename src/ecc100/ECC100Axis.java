@@ -25,7 +25,7 @@ public class ECC100Axis
 
 		mPointerToDeviceHandle.set(pECC100Controller.getControllerDeviceHandle(pDeviceIndex));
 		mAxisIndex = pAxisIndex;
-		stopOnEOT(true);
+		// stopOnEOT(true);
 		getReferencePosition();
 	}
 

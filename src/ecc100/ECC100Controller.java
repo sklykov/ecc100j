@@ -15,7 +15,7 @@ import ecc100.bindings.EccLibrary;
 public class ECC100Controller
 {
 
-	private static final int cMaxNumberOfControllers = 4;
+	private static final int cMaxNumberOfControllers = 2;
 	private static final int cNumberOfAxisPerController = 3;
 	private ArrayList<Pointer<Integer>> mPointerToDeviceHandleList = new ArrayList<>();
 	private HashSet<Integer> mDeviceIdList = new HashSet<>();
@@ -51,7 +51,7 @@ public class ECC100Controller
 			if (lPointerToInfoStruct != null)
 			{
 				EccInfo lEccInfo = lPointerToInfoStruct.get();
-				// System.out.println("lEccInfo" + i + "->" + lEccInfo);
+				System.out.println("lEccInfo" + i + "->" + lEccInfo);
 
 				Pointer<Integer> lPointerToDeviceHandle = Pointer.allocateInt();
 				EccLibrary.ECC_Connect(i, lPointerToDeviceHandle);
