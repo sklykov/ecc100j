@@ -1,4 +1,4 @@
-package ecc100.test;
+package ecc100.demo;
 
 import static org.junit.Assert.assertTrue;
 
