@@ -1,29 +1,23 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Java binding for AttuCube's ECC100 controller and ECS actuators
 
-### What is this repository for? ###
+### How to build the project? ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* Building ECC100J
+To build ECC100J you need Gradle build tool - http://www.gradle.org/overview
+Tip: Make sure that the gradle executable is in your path.
 
-### How do I get set up? ###
+to build the project:
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+    gradle build
 
-### Contribution guidelines ###
+To generate eclipse project files:
 
-* Writing tests
-* Code review
-* Other guidelines
+    gradle eclipse
 
-### Who do I talk to? ###
+To clean-up modified eclipse project files:
 
-* Repo owner or admin
-* Other community or team contact
+    gradle cleanEclipse
+
+That's it, now you can import the ECC100J projects in Eclipse. 
