@@ -46,12 +46,13 @@ public class ECC100Controller
 
 		for (int i = 0; i < mNumberOfControllers; i++)
 		{
-			Pointer<EccInfo> lPointerToInfoStruct = lPointerToPointerToInfoStruct.get(i);
+			// Pointer<EccInfo> lPointerToInfoStruct =
+			// lPointerToPointerToInfoStruct.get(i);
 
-			if (lPointerToInfoStruct != null)
+			// if (lPointerToInfoStruct != null)
 			{
-				EccInfo lEccInfo = lPointerToInfoStruct.get();
-				System.out.println("lEccInfo" + i + "->" + lEccInfo);
+				// EccInfo lEccInfo = lPointerToInfoStruct.get();
+				// System.out.println("lEccInfo" + i + "->" + lEccInfo);
 
 				Pointer<Integer> lPointerToDeviceHandle = Pointer.allocateInt();
 				EccLibrary.ECC_Connect(i, lPointerToDeviceHandle);
@@ -61,8 +62,8 @@ public class ECC100Controller
 				for (int j = 0; j < cNumberOfAxisPerController; j++)
 				{
 					ECC100Axis lECC100Axis = new ECC100Axis(this, i, j);
-					lECC100Axis.setLocked(lEccInfo.locked() != 0);
-					final int lDeviceId = lEccInfo.id();
+					lECC100Axis.setLocked(false); // lEccInfo.locked() != 0);
+					final int lDeviceId = i; // lEccInfo.id();
 					mDeviceIdList.add(lDeviceId);
 					mDeviceIdAxisIndexToAxisMap.put(lDeviceId, j, lECC100Axis);
 				}
