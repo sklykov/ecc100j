@@ -42,7 +42,7 @@ public class ECC100Controller
 
 		mNumberOfControllers = EccLibrary.ECC_Check(lPointerToPointerToInfoStruct);
 
-		System.out.println("mNumberOfControllers=" + mNumberOfControllers);
+		// System.out.println("mNumberOfControllers=" + mNumberOfControllers);
 
 		for (int i = 0; i < mNumberOfControllers; i++)
 		{
