@@ -17,9 +17,9 @@ public class ECC100Controller
 
 	private static final int cMaxNumberOfControllers = 2;
 	private static final int cNumberOfAxisPerController = 3;
-	private ArrayList<Pointer<Integer>> mPointerToDeviceHandleList = new ArrayList<>();
-	private HashSet<Integer> mDeviceIdList = new HashSet<>();
-	private HashBasedTable<Integer, Integer, ECC100Axis> mDeviceIdAxisIndexToAxisMap = HashBasedTable.create();
+	private final ArrayList<Pointer<Integer>> mPointerToDeviceHandleList = new ArrayList<>();
+	private final HashSet<Integer> mDeviceIdList = new HashSet<>();
+	private final HashBasedTable<Integer, Integer, ECC100Axis> mDeviceIdAxisIndexToAxisMap = HashBasedTable.create();
 	private int mNumberOfControllers;
 
 	private volatile boolean mIsOpened = false;
@@ -32,62 +32,70 @@ public class ECC100Controller
 	public boolean open()
 	{
 
-		Pointer<Pointer<EccInfo>> lPointerToPointerToInfoStruct = Pointer.allocatePointers(	EccInfo.class,
-																																												cMaxNumberOfControllers);
-		for (int i = 0; i < cMaxNumberOfControllers; i++)
+		try
 		{
-			lPointerToPointerToInfoStruct.set(i,
-																				Pointer.allocate(EccInfo.class));
-		}
-
-		mNumberOfControllers = EccLibrary.ECC_Check(lPointerToPointerToInfoStruct);
-
-		// System.out.println("mNumberOfControllers=" + mNumberOfControllers);
-
-		for (int i = 0; i < mNumberOfControllers; i++)
-		{
-			// Pointer<EccInfo> lPointerToInfoStruct =
-			// lPointerToPointerToInfoStruct.get(i);
-
-			// if (lPointerToInfoStruct != null)
+			final Pointer<Pointer<EccInfo>> lPointerToPointerToInfoStruct = Pointer.allocatePointers(	EccInfo.class,
+																																													cMaxNumberOfControllers);
+			for (int i = 0; i < cMaxNumberOfControllers; i++)
 			{
-				// EccInfo lEccInfo = lPointerToInfoStruct.get();
-				// System.out.println("lEccInfo" + i + "->" + lEccInfo);
+				lPointerToPointerToInfoStruct.set(i,
+																					Pointer.allocate(EccInfo.class));
+			}
 
-				Pointer<Integer> lPointerToDeviceHandle = Pointer.allocateInt();
-				EccLibrary.ECC_Connect(i, lPointerToDeviceHandle);
+			mNumberOfControllers = EccLibrary.ECC_Check(lPointerToPointerToInfoStruct);
 
-				mPointerToDeviceHandleList.add(lPointerToDeviceHandle);
+			// System.out.println("mNumberOfControllers=" + mNumberOfControllers);
 
-				for (int j = 0; j < cNumberOfAxisPerController; j++)
+			for (int i = 0; i < mNumberOfControllers; i++)
+			{
+				// Pointer<EccInfo> lPointerToInfoStruct =
+				// lPointerToPointerToInfoStruct.get(i);
+
+				// if (lPointerToInfoStruct != null)
 				{
-					ECC100Axis lECC100Axis = new ECC100Axis(this, i, j);
-					lECC100Axis.setLocked(false); // lEccInfo.locked() != 0);
-					final int lDeviceId = i; // lEccInfo.id();
-					mDeviceIdList.add(lDeviceId);
-					mDeviceIdAxisIndexToAxisMap.put(lDeviceId, j, lECC100Axis);
+					// EccInfo lEccInfo = lPointerToInfoStruct.get();
+					// System.out.println("lEccInfo" + i + "->" + lEccInfo);
+
+					final Pointer<Integer> lPointerToDeviceHandle = Pointer.allocateInt();
+					EccLibrary.ECC_Connect(i, lPointerToDeviceHandle);
+
+					mPointerToDeviceHandleList.add(lPointerToDeviceHandle);
+
+					for (int j = 0; j < cNumberOfAxisPerController; j++)
+					{
+						final ECC100Axis lECC100Axis = new ECC100Axis(this, i, j);
+						lECC100Axis.setLocked(false); // lEccInfo.locked() != 0);
+						final int lDeviceId = i; // lEccInfo.id();
+						mDeviceIdList.add(lDeviceId);
+						mDeviceIdAxisIndexToAxisMap.put(lDeviceId, j, lECC100Axis);
+					}
 				}
 			}
-		}
 
-		Runtime.getRuntime().addShutdownHook(new Thread()
-		{
-			@Override
-			public void run()
+			Runtime.getRuntime().addShutdownHook(new Thread()
 			{
-				try
+				@Override
+				public void run()
 				{
-					close();
+					try
+					{
+						close();
+					}
+					catch (final Throwable e)
+					{
+						e.printStackTrace();
+					}
 				}
-				catch (Throwable e)
-				{
-					e.printStackTrace();
-				}
-			}
-		});
+			});
 
-		mIsOpened = true;
-		return true;
+			mIsOpened = true;
+			return true;
+		}
+		catch (final Throwable e)
+		{
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	public void close()
@@ -95,12 +103,12 @@ public class ECC100Controller
 		if (!mIsOpened)
 			return;
 
-		for (ECC100Axis lECC100Axis : mDeviceIdAxisIndexToAxisMap.values())
+		for (final ECC100Axis lECC100Axis : mDeviceIdAxisIndexToAxisMap.values())
 		{
 			lECC100Axis.home();
 		}
 
-		for (Pointer<Integer> lPointerToControllerDeviceHandle : mPointerToDeviceHandleList)
+		for (final Pointer<Integer> lPointerToControllerDeviceHandle : mPointerToDeviceHandleList)
 		{
 			EccLibrary.ECC_Close(lPointerToControllerDeviceHandle.getInt());
 			lPointerToControllerDeviceHandle.release();
@@ -121,24 +129,24 @@ public class ECC100Controller
 
 	public ECC100Axis getAxis(int pDeviceId, int pAxisIndex)
 	{
-		return (ECC100Axis) mDeviceIdAxisIndexToAxisMap.get(pDeviceId,
+		return mDeviceIdAxisIndexToAxisMap.get(pDeviceId,
 																												pAxisIndex);
 	}
 
 	public boolean start()
 	{
-		Collection<ECC100Axis> lAllECC100Axis = mDeviceIdAxisIndexToAxisMap.values();
+		final Collection<ECC100Axis> lAllECC100Axis = mDeviceIdAxisIndexToAxisMap.values();
 
-		for (ECC100Axis lECC100Axis : lAllECC100Axis)
+		for (final ECC100Axis lECC100Axis : lAllECC100Axis)
 			lECC100Axis.home();
 		return true;
 	}
 
 	public boolean stop()
 	{
-		Collection<ECC100Axis> lAllECC100Axis = mDeviceIdAxisIndexToAxisMap.values();
+		final Collection<ECC100Axis> lAllECC100Axis = mDeviceIdAxisIndexToAxisMap.values();
 
-		for (ECC100Axis lECC100Axis : lAllECC100Axis)
+		for (final ECC100Axis lECC100Axis : lAllECC100Axis)
 			lECC100Axis.stop();
 		return true;
 	}
