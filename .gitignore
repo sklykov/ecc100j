@@ -6,5 +6,6 @@ build/
 .gradle
 *.class
 .DS_Store
+.idea/
 
 out
