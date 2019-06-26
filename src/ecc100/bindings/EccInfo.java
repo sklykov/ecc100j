@@ -20,17 +20,12 @@ import org.bridj.ann.Library;
  *        or <a href="http://bridj.googlecode.com/">BridJ</a> .
  */
 @Library("ecc")
-public class EccInfo extends StructObject
-{
-  static
-  {
-    BridJ.register();
-  }
+public class EccInfo extends StructObject {
+  static { BridJ.register(); }
 
   /** < Programmed ID of the device */
   @Field(0)
-  public int id()
-  {
+  public int id() {
     return this.io.getIntField(this, 0);
   }
 
@@ -47,8 +42,7 @@ public class EccInfo extends StructObject
    * C type : Bln32
    */
   @Field(1)
-  public int locked()
-  {
+  public int locked() {
     return this.io.getIntField(this, 1);
   }
 
@@ -63,13 +57,9 @@ public class EccInfo extends StructObject
     return this;
   }
 
-  public EccInfo()
-  {
-    super();
-  }
+  public EccInfo() { super(); }
 
-  public EccInfo(Pointer pointer)
-  {
+  public EccInfo(Pointer pointer) {
     super(pointer);
   }
 }

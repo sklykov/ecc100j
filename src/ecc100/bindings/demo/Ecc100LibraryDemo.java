@@ -18,48 +18,35 @@ public class Ecc100LibraryDemo
     System.out.println("BEGIN");
 
     // Thread.sleep(1000);
-    Pointer<Pointer<EccInfo>> info =
-                                   Pointer.allocatePointers(EccInfo.class,
-                                                            4);
-    for (int i = 0; i < 4; i++)
-    {
+    Pointer<Pointer<EccInfo>> info = Pointer.allocatePointers(EccInfo.class, 4);
+    for (int i = 0; i < 4; i++) {
       info.set(Pointer.allocate(EccInfo.class));
     }
 
     int lNumberOfDevicesFound = EccLibrary.ECC_Check(info);
 
-    System.out.println("lNumberOfDevicesFound="
-                       + lNumberOfDevicesFound);
+    System.out.println("lNumberOfDevicesFound = " + lNumberOfDevicesFound);
 
-    for (int i = 0; i < lNumberOfDevicesFound; i++)
-    {
+    for (int i = 0; i < lNumberOfDevicesFound; i++) {
       Pointer<EccInfo> lPointer = info.get(i);
 
-      if (lPointer != null)
-      {
+      if (lPointer != null) {
         EccInfo lEccInfo = lPointer.get();
         System.out.println("lEccInfo" + i + "->" + lEccInfo);
-      }
-      else
-      {
+      } else {
         System.out.println("NULL");
       }
     } /**/
 
-    Pointer<Integer> lPointerToDeviceHandle =
-                                            Pointer.allocate(Integer.class);
+    Pointer<Integer> lPointerToDeviceHandle = Pointer.allocate(Integer.class);
     Pointer<Integer> lPointerToDeviceId = Pointer.allocateInt();
     Pointer<Integer> lPointerToIsLocked = Pointer.allocateInt();
 
-    for (int i = 0; i < lNumberOfDevicesFound; i++)
-    {
-      EccLibrary.ECC_getDeviceInfo(i,
-                                   lPointerToDeviceId,
-                                   lPointerToIsLocked);
+    for (int i = 0; i < lNumberOfDevicesFound; i++) {
+      EccLibrary.ECC_getDeviceInfo(i, lPointerToDeviceId, lPointerToIsLocked);
 
       System.out.println("devId=" + lPointerToDeviceId.getInt()
-                         + " locked="
-                         + lPointerToIsLocked.getInt());
+                         + " locked=" + lPointerToIsLocked.getInt());
 
       connectToDevice(lPointerToDeviceHandle, i);
       printActorName(lPointerToDeviceHandle, i);
