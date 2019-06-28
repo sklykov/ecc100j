@@ -7,11 +7,8 @@ package ecc100;
  */
 
 import static java.lang.Math.abs;
-
 import java.util.concurrent.TimeUnit;
-
 import ecc100.bindings.EccLibrary;
-
 import org.bridj.Pointer;
 
 public class ECC100Axis {
@@ -24,7 +21,7 @@ public class ECC100Axis {
 
   /**
    * Constructor accepting ECC100Controller class, index of a device, some index of axis (?)
-   * @param pECC100Controller
+   * @param pECC100Controller - sample of class ECC100Controller
    * @param pDeviceIndex
    * @param pAxisIndex
    */
@@ -63,8 +60,12 @@ public class ECC100Axis {
     printLastError();
   }
 
+  /**
+   * Force stage to go to "0 um" position
+   */
   public void home() {
-    getReferencePosition();
+    getReferencePosition(); // The set reference position isn't used further explicitly.
+                            // But maybe implicitly it influences somehow to the next method
     goToPosition(0, cGoToEpsilon);
   }
 
@@ -210,10 +211,15 @@ public class ECC100Axis {
     return lCurrentPositionInt;
   }
 
+  /**
+   * Actually, this method better shown and explained in original GUI program.
+   * It returns some measured reference position. This reference position can be
+   * set by user from starting.*
+   * @return double referencePosition in microns
+   */
   public double getReferencePosition() {
     if (!isReferencePositionValid())
       return 0;
-
     Pointer<Integer> lReferencePosition = Pointer.allocateInt();
     EccLibrary.ECC_getReferencePosition(mPointerToDeviceHandle.getInt(), mAxisIndex, lReferencePosition);
     int lReferencePositionInt = lReferencePosition.getInt();

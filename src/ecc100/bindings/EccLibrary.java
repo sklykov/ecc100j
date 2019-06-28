@@ -28,10 +28,7 @@ import org.bridj.ann.Runtime;
 @Runtime(CRuntime.class)
 public class EccLibrary
 {
-  static
-  {
-    BridJ.register();
-  }
+  static { BridJ.register(); }
 
   /**
    * enum values<br>
@@ -186,16 +183,20 @@ public class EccLibrary
    *         <code>__attribute__((dllimport)) Int32 ECC_Connect(Int32, Int32*)</code><br>
    *         <i>native declaration : lib\ecc100\ecc.h:150</i>
    */
+
+  /**
+   * Super deep reference to returning some int value from Pointer class
+   * @param deviceNo
+   * @param deviceHandle
+   * @return int>0 if all is alright...
+   */
   @Convention(Convention.Style.StdCall)
-  public static int ECC_Connect(int deviceNo,
-                                Pointer<Integer> deviceHandle)
-  {
+  public static int ECC_Connect(int deviceNo, Pointer<Integer> deviceHandle) {
     return ECC_Connect(deviceNo, Pointer.getPeer(deviceHandle));
   }
 
   @Convention(Convention.Style.StdCall)
-  protected native static int ECC_Connect(int deviceNo,
-                                          @Ptr long deviceHandle);
+  protected native static int ECC_Connect(int deviceNo, @Ptr long deviceHandle);
 
   /**
    * @brief Close connection<br>
