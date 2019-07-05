@@ -228,6 +228,10 @@ public class ECC100Axis {
     return lReferencePositionInMicrons;
   }
 
+  /**
+   * From GUI program - If this reference position is initialized correctly, it's true
+   * @return boolean
+   */
   public boolean isReferencePositionValid() {
     Pointer<Integer> lReferencePositionIsValid = Pointer.allocateInt();
     EccLibrary.ECC_getStatusReference(mPointerToDeviceHandle.getInt(), mAxisIndex, lReferencePositionIsValid);

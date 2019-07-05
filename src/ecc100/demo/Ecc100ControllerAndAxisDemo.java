@@ -34,7 +34,7 @@ public class Ecc100ControllerAndAxisDemo
     lAxis.continuous(false, true);
 
     System.out.println("getCurrentPosition=" + lAxis.getCurrentPosition());
-    lAxis.goToPositionAndWait(2000);
+    lAxis.goToPositionAndWait(10);
     System.out.println("getCurrentPosition=" + lAxis.getCurrentPosition());
     lAxis.goToPositionAndWait(0);
     System.out.println("getCurrentPosition=" + lAxis.getCurrentPosition());
