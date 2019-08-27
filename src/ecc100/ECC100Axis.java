@@ -12,7 +12,7 @@ import ecc100.bindings.EccLibrary;
 import org.bridj.Pointer;
 
 public class ECC100Axis {
-  private static final double cGoToEpsilon = 10; // ?
+  private static final double cGoToEpsilon = 1; // maximum acceptible distance between target and current distance
   private Pointer<Integer> mPointerToDeviceHandle = Pointer.allocateInt(); // Pointer - to the memory (C code), Pointer - wrapper class around C code
   private int mAxisIndex; // for enumeration of axises (actually stages, which all moving along 1 axis)
   private boolean mLocked = false; // flag to show if the stage is performing some task and locked till completion (? this is supposed readable code?)
@@ -107,12 +107,16 @@ public class ECC100Axis {
     if (isLocked())
       return false;
 
+    //System.out.println("Hello world");
     long lDeadLine = System.nanoTime() + TimeUnit.NANOSECONDS.convert(pTimeOut, pTimeUnit);
-    while (!isReady() && !hasArrived()) {
+    //System.out.println("Ready: " + isReady());
+    //System.out.println("Arrived: " + hasArrived());
+    //System.out.println("Moving: " + isMoving());
+
+    while (isMoving() && abs(pTargetPositionInMicrons - getCurrentPosition()) > pEpsilonInMicrons) {
       try {
-        /*System.out.println("isMoving=" + isMoving());
-        System.out.println("getCurrentPosition=" + getCurrentPosition());
-        System.out.println("pTargetPosition=" + pTargetPosition);/**/
+        //System.out.println("isMoving=" + isMoving());
+        //System.out.println("getCurrentPosition=" + getCurrentPosition());
         Thread.sleep(100);
       }
       catch (InterruptedException e) {

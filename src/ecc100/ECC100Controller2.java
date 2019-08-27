@@ -64,6 +64,11 @@ public class ECC100Controller2 extends ECC100Controller {
         int VoltageInMilliVol = 30000; int FrequencyInMilliHerz = 2_000_000;
 
         if (deviceIdList.size() > 0) {
+
+            for (Integer deviceId : deviceIdList) {
+                System.out.println("ID " + deviceId);
+            }
+
             // for loop going through connected devices
             allAxis = new ArrayList<>();
             for (int i = 0; i < deviceIdList.size(); i++) {
@@ -75,20 +80,36 @@ public class ECC100Controller2 extends ECC100Controller {
                     // of physical connection
 
                     ECC100Axis axis = this.getAxis(deviceIdList.get(i), j);
+                    System.out.println("Controller " + i + " axis " + j + ": " + axis);
+                    System.out.println("Reference: " + axis.getReferencePosition());
+                    System.out.println("Ref valid: " + axis.isReferencePositionValid());
+                    axis.home();
+                    System.out.println("Homing done");
 
                     // set default physical controlling parameter
                     axis.setVoltage(VoltageInMilliVol); axis.setFrequency(FrequencyInMilliHerz);
 
                     // so, the actual physical connection is checked by invoking movement of each axis
-                    double currentPosition = axis.getCurrentPosition();
-                    // System.out.println("Current position of axis is: " + currentPosition + " reference position is " + axis.getReferencePosition());
-                    // below is testing physical ability to move forward as a probe of physical connection
-                    // System.out.println("is reference position is valid? " + axis.isReferencePositionValid());
 
-                    double difference = Math.abs(currentPosition - axis.getReferencePosition());
+                    double positionBefore = axis.getCurrentPosition();
+
+                    System.out.println("Position before " + axis.getCurrentPosition());
+
+                    // below is testing physical ability to move forward as a probe of physical connection
+                    //axis.singleStep(true);
+                    //axis.singleStep(true);
+                    //axis.singleStep(true);
+                    //axis.singleStep(true);
+                    axis.goToPositionAndWait(axis.getCurrentPosition() + 100);
+                    //sleep(1000);
+
+                    System.out.println("Position after " + axis.getCurrentPosition());
+
+                    double difference = Math.abs(positionBefore - axis.getCurrentPosition());
+                  
                     if ((axis != null)&&(difference > 0)) {
-                        allAxis.add(j,axis);
-                        // System.out.println(axis.getActorName());
+                        System.out.println(axis.getActorName());
+                        allAxis.add(axis);
                     }
                     j++;
                 }
@@ -99,6 +120,14 @@ public class ECC100Controller2 extends ECC100Controller {
             }
         }
         return false;
+    }
+
+    private void sleep(int i) {
+        try {
+            Thread.sleep(i);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
