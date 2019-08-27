@@ -12,10 +12,10 @@ import ecc100.bindings.EccLibrary;
 import org.bridj.Pointer;
 
 public class ECC100Axis {
-  private static final double cGoToEpsilon = 1; // maximum acceptible distance between target and current distance
+  private static final double cGoToEpsilon = 1; // maximum acceptable distance between target and current distance
   private Pointer<Integer> mPointerToDeviceHandle = Pointer.allocateInt(); // Pointer - to the memory (C code), Pointer - wrapper class around C code
-  private int mAxisIndex; // for enumeration of axises (actually stages, which all moving along 1 axis)
-  private boolean mLocked = false; // flag to show if the stage is performing some task and locked till completion (? this is supposed readable code?)
+  private int mAxisIndex; // for enumeration of axes (actually stages, which all moving along single axis or direction)
+  private boolean mLocked = false; // flag to show if the stage is performing some task and locked till completion
   private volatile double mLastTargetPositionInMicrons; // for accessing the last assigned position.
   private volatile double pLastEpsilonInMicrons; // ?
 
@@ -41,9 +41,13 @@ public class ECC100Axis {
     return lInt;
   }
 
+  /**
+   * Examing if stage moving or not...
+   * @return true if "Moving State is more than 0"
+   */
   public boolean isMoving() {
     int lMovingState = isMovingState(mPointerToDeviceHandle, mAxisIndex);
-    return lMovingState == 1;
+    return lMovingState > 0;
   }
 
   public boolean isPending() {
@@ -82,6 +86,11 @@ public class ECC100Axis {
     controlAproachToTargetPosition(false);
   }
 
+  /**
+   * ? - functionality, could be some issues with synchronization, because this method doesn't implement the timeout functionality
+   * @param pTargetPositionInMicrons - readable name parameter
+   * @param pEpsilonInMicrons - maximum allowed difference between the target position and the actual one
+   */
   public void goToPosition(double pTargetPositionInMicrons, double pEpsilonInMicrons) {
     enable();
     setTargetPosition(pTargetPositionInMicrons);
@@ -113,7 +122,8 @@ public class ECC100Axis {
     //System.out.println("Arrived: " + hasArrived());
     //System.out.println("Moving: " + isMoving());
 
-    while (isMoving() && abs(pTargetPositionInMicrons - getCurrentPosition()) > pEpsilonInMicrons) {
+    // below is the main change - the condition for while case (until reaching the position) + establishing the pause for the stage (Thread.sleep)
+    while (isMoving() && (abs(pTargetPositionInMicrons - getCurrentPosition()) > pEpsilonInMicrons)) {
       try {
         //System.out.println("isMoving=" + isMoving());
         //System.out.println("getCurrentPosition=" + getCurrentPosition());
