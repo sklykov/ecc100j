@@ -61,7 +61,7 @@ public class ECC100Controller2 extends ECC100Controller {
         List<Integer> deviceIdList = this.getDeviceIdList(); // enumerate all presented ports - actually, shows number of connected ports!
 
         // set default voltages / frequencies = 30 V, 1 kHz
-        int VoltageInMilliVol = 30000; int FrequencyInMilliHerz = 1_000_000;
+        int VoltageInMilliVol = 30000; int FrequencyInMilliHerz = 2_000_000;
 
         if (deviceIdList.size() > 0) {
             // for loop going through connected devices
@@ -81,10 +81,11 @@ public class ECC100Controller2 extends ECC100Controller {
 
                     // so, the actual physical connection is checked by invoking movement of each axis
                     double currentPosition = axis.getCurrentPosition();
+                    // System.out.println("Current position of axis is: " + currentPosition + " reference position is " + axis.getReferencePosition());
                     // below is testing physical ability to move forward as a probe of physical connection
-                    axis.singleStep(true); axis.singleStep(true);
-                    axis.singleStep(true); axis.singleStep(true);
-                    double difference = Math.abs(currentPosition - axis.getCurrentPosition());
+                    // System.out.println("is reference position is valid? " + axis.isReferencePositionValid());
+
+                    double difference = Math.abs(currentPosition - axis.getReferencePosition());
                     if ((axis != null)&&(difference > 0)) {
                         allAxis.add(j,axis);
                         // System.out.println(axis.getActorName());
