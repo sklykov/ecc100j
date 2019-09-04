@@ -29,7 +29,7 @@ public class ECC100Axis {
     super(); // just a redundant piece of code or not?
     mPointerToDeviceHandle.set(pECC100Controller.getControllerDeviceHandle(pDeviceIndex));
     mAxisIndex = pAxisIndex;
-    // stopOnEOT(true);
+    // stopOnEOT(true); // ? Just looking through the code and found this commented out calling function... Why did it turn commented out?
     getReferencePosition();
   }
 
@@ -73,6 +73,9 @@ public class ECC100Axis {
     goToPosition(0, cGoToEpsilon);
   }
 
+  /**
+   * Activation of controlling of approaching to the assigned position
+   */
   public void enable() {
     controlAproachToTargetPosition(true);
     controlOutputRelais(true);
@@ -92,19 +95,42 @@ public class ECC100Axis {
    * @param pEpsilonInMicrons - maximum allowed difference between the target position and the actual one
    */
   public void goToPosition(double pTargetPositionInMicrons, double pEpsilonInMicrons) {
-    enable();
-    setTargetPosition(pTargetPositionInMicrons);
+    enable(); // controlling the movement
+    setTargetPosition(pTargetPositionInMicrons); // ok, moving the stage...
+    double diff = Math.abs(pTargetPositionInMicrons - getCurrentPosition());
+    boolean conditionReached = (diff > pEpsilonInMicrons); // Actual condition of stopping movement
+    // System.out.println(diff); System.out.println(condition);
+    // Forcing of the controlled actuator to reach the assigned position - ?
+    if (conditionReached){
+      while (conditionReached){
+        setTargetPosition(pTargetPositionInMicrons);
+        diff = Math.abs(pTargetPositionInMicrons - getCurrentPosition());
+        conditionReached = (diff > pEpsilonInMicrons);
+      }
+    }
   }
 
+  /**
+   * Simplified version of other polymorphic function
+   * @param pTargetPositionInMicrons - only needed, in this case timeout will be equal to 1 minute
+   */
   public void goToPositionAndWait(double pTargetPositionInMicrons) {
     goToPositionAndWait(pTargetPositionInMicrons, cGoToEpsilon, 1, TimeUnit.MINUTES);
   }
 
+  /**
+   * In theory, moving stage and waiting on reached position method
+   * @param pTargetPositionInMicrons - readable name
+   * @param pEpsilonInMicrons - maximal allowed absolute difference between actual and desired positions
+   * @param pTimeOut - actually, waiting position
+   * @param pTimeUnit - minutes, seconds, ms, ns
+   * @return
+   */
   public boolean goToPositionAndWait(double pTargetPositionInMicrons, double pEpsilonInMicrons, long pTimeOut, TimeUnit pTimeUnit) {
-    enable();
-    setTargetPosition(pTargetPositionInMicrons);
-    mLastTargetPositionInMicrons = pTargetPositionInMicrons;
-    pLastEpsilonInMicrons = pEpsilonInMicrons;
+    enable(); // Controlling Approach to the position
+    setTargetPosition(pTargetPositionInMicrons); // referring to native method calling inside ...
+    mLastTargetPositionInMicrons = pTargetPositionInMicrons; // saving actual target position as "last one used"
+    pLastEpsilonInMicrons = pEpsilonInMicrons; // the same as above - for epsilon value
     return waitToArriveAt(pTargetPositionInMicrons, pEpsilonInMicrons, pTimeOut, pTimeUnit);
   }
 
@@ -116,7 +142,6 @@ public class ECC100Axis {
     if (isLocked())
       return false;
 
-    //System.out.println("Hello world");
     long lDeadLine = System.nanoTime() + TimeUnit.NANOSECONDS.convert(pTimeOut, pTimeUnit);
     //System.out.println("Ready: " + isReady());
     //System.out.println("Arrived: " + hasArrived());
@@ -139,9 +164,11 @@ public class ECC100Axis {
   }
 
   public void setTargetPosition(double lTargetPositionInMicrons) {
-    Pointer<Integer> lPointerToTarget = Pointer.allocateInt();
-    lPointerToTarget.set((int) (lTargetPositionInMicrons * 1000 + getReferencePosition() * 1000));
-    EccLibrary.ECC_controlTargetPosition(mPointerToDeviceHandle.getInt(), mAxisIndex, lPointerToTarget, 1);
+    Pointer<Integer> lPointerToTarget = Pointer.allocateInt(); // create sample class to transfer data to an actuator
+    lPointerToTarget.set((int) (lTargetPositionInMicrons * 1000 + getReferencePosition() * 1000)); // actual method (set - in "Pointer.class")
+    int result = EccLibrary.ECC_controlTargetPosition(mPointerToDeviceHandle.getInt(), mAxisIndex,
+            lPointerToTarget,  1); // as an idea: it returns some integer as the result of performing of this method...
+    // System.out.println("result of moving is: " + result); // SEEMS THAT 0 - is the result then axis just moving without errors
     lPointerToTarget.release();
     printLastError();
   }
@@ -233,7 +260,7 @@ public class ECC100Axis {
    */
   public double getReferencePosition() {
     if (!isReferencePositionValid())
-      return 0;
+      return Integer.MAX_VALUE; // to show that reference position isn't valid
     Pointer<Integer> lReferencePosition = Pointer.allocateInt();
     EccLibrary.ECC_getReferencePosition(mPointerToDeviceHandle.getInt(), mAxisIndex, lReferencePosition);
     int lReferencePositionInt = lReferencePosition.getInt();

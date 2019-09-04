@@ -74,6 +74,7 @@ public class ECC100Controller2 extends ECC100Controller {
 
             // for loop going through connected devices - axis or actuators
             allAxis = new ArrayList<>();
+            int nInitializedAxis = 0; int nNotInitAxis = 0;
             for (int i = 0; i < deviceIdList.size(); i++) {
                 int j = 0; // count through all axis
                 int countOfAttempt = 0; // counting the axes calling attempts, maximum 3 axis could be controlled by the ECC100
@@ -89,50 +90,56 @@ public class ECC100Controller2 extends ECC100Controller {
                     // System.out.println("Controller " + i + " axis " + j + ": " + axis);
                     // System.out.println("Reference: " + axis.getReferencePosition());
                     // System.out.println("Ref valid: " + axis.isReferencePositionValid());
-                    // axis.home();
-                    // System.out.println("Homing done");
 
                     // set default physical controlling parameter
                     axis.setVoltage(VoltageInMilliVol); axis.setFrequency(FrequencyInMilliHerz);
 
-                    // so, the actual physical connection is checked by invoking movement of each axis
+                    // Below is attempt to detect the reference position by moving stage forward and backward...
+                    // It's FAILED... It's more simple to find reference position MANUALLY
+                    /* if (!axis.isReferencePositionValid()){
+                        int attempts = 0;
+                        double currentPos = axis.getCurrentPosition();
+                        while (!axis.isReferencePositionValid()&&(attempts < 1000)&&(currentPos < 9000)){
+                            axis.singleStep(true);
+                            currentPos = axis.getCurrentPosition(); attempts++;
+                        }
+                    }
+                    if (!axis.isReferencePositionValid()){
+                        int attempts = 0;
+                        double currentPos = axis.getCurrentPosition();
+                        while (!axis.isReferencePositionValid()&&(attempts < 1000)&&(currentPos > -9000)){
+                            axis.singleStep(false);
+                            currentPos = axis.getCurrentPosition(); attempts++;
+                        }
+                    }
+                     */
 
-                    double positionBefore = axis.getCurrentPosition();
-
-                    // System.out.println("Position before " + axis.getCurrentPosition());
-
-                    // below is testing physical ability to move forward as a probe of physical connection
-                    axis.goToPositionAndWait(axis.getCurrentPosition() + 3,1,100, TimeUnit.MILLISECONDS);
-
+                    // below is testing physical ability to move forward as a probe of physical connection - NO DEPRICATED
+                    // double positionBefore = axis.getCurrentPosition();
+                    //axis.goToPositionAndWait(axis.getCurrentPosition() + 3,1,100, TimeUnit.MILLISECONDS);
                     // System.out.println("Position after " + axis.getCurrentPosition());
-
-                    double difference = Math.abs(positionBefore - axis.getCurrentPosition());
-
+                    // double difference = Math.abs(positionBefore - axis.getCurrentPosition());
                     // System.out.println(difference + " difference after step");
                   
-                    if ((axis != null)&&(difference > 0)&&(axis.isReferencePositionValid())) {
-                        // System.out.println(axis.getActorName());
-                        allAxis.add(j,axis);
+                    if ((axis != null)&&(axis.isReferencePositionValid())) {
+                        allAxis.add(j, axis);
                         j++;
+                    }
+                    if ((axis != null)&&(!axis.isReferencePositionValid())){
+                        nNotInitAxis++;
                     }
                     countOfAttempt++;
                 }
-                System.out.println("Number of initialized axes: " + j);
+                System.out.println("Number of initialized axes: " + j + " and number of all connected axis: " + (j+nNotInitAxis));
+                nInitializedAxis = j;
             }
-            if (allAxis.size() > 0){
+
+            if ((allAxis.size() > 0)&&(nInitializedAxis>0)&&(nNotInitAxis == 0)){
                 this.start(); // set all axis to the home position ("0 um"). The stages successfully returns to home positions
                 return true;
             }
         }
         return false;
-    }
-
-    private void sleep(int i) {
-        try {
-            Thread.sleep(i);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     /**

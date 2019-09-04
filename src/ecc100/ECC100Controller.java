@@ -51,7 +51,7 @@ public class ECC100Controller {
           // EccInfo lEccInfo = lPointerToInfoStruct.get();
           // System.out.println("lEccInfo" + i + "->" + lEccInfo);
           final Pointer<Integer> lPointerToDeviceHandle = Pointer.allocateInt(); // some LOCAL pointer to device handle
-          EccLibrary.ECC_Connect(i, lPointerToDeviceHandle); // calling some method returing int ECC_Connect...
+          EccLibrary.ECC_Connect(i, lPointerToDeviceHandle); // calling some method returning int ECC_Connect...
           mPointerToDeviceHandleList.add(lPointerToDeviceHandle); // add Pointer to Device Handle to the list
           for (int j = 0; j < cNumberOfAxisPerController; j++) {
             final ECC100Axis lECC100Axis = new ECC100Axis(this, i, j); // here actual initialization of LOCAL ECC100Axis!
