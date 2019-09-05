@@ -341,13 +341,12 @@ public class EccLibrary
    *         <i>native declaration : lib\ecc100\ecc.h:242</i>
    */
   @Convention(Convention.Style.StdCall)
-  public static int ECC_getActorName(int deviceHandle, int axis, Pointer<Byte> name)
-  {
+  public static int ECC_getActorName(int deviceHandle, int axis, Pointer<Byte> name) {
     return ECC_getActorName(deviceHandle, axis, Pointer.getPeer(name));
   }
-
   @Convention(Convention.Style.StdCall)
   protected native static int ECC_getActorName(int deviceHandle, int axis, @Ptr long name);
+
 
   /**
    * @brief Get actor type<br>
@@ -408,15 +407,12 @@ public class EccLibrary
    *         <i>native declaration : lib\ecc100\ecc.h:284</i>
    */
   @Convention(Convention.Style.StdCall)
-  public static int ECC_getStatusFlash(int deviceHandle,
-                                       Pointer<Integer> writing)
-  {
+  public static int ECC_getStatusFlash(int deviceHandle, Pointer<Integer> writing) {
     return ECC_getStatusFlash(deviceHandle, Pointer.getPeer(writing));
   }
-
   @Convention(Convention.Style.StdCall)
-  protected native static int ECC_getStatusFlash(int deviceHandle,
-                                                 @Ptr long writing);
+  protected native static int ECC_getStatusFlash(int deviceHandle, @Ptr long writing);
+
 
   /**
    * @brief Reset position<br>
@@ -509,8 +505,7 @@ public class EccLibrary
    *         <i>native declaration : lib\ecc100\ecc.h:346</i>
    */
   @Convention(Convention.Style.StdCall)
-  public static int ECC_controlContinousFwd(int deviceHandle, int axis, Pointer<Integer> enable, int set)
-  {
+  public static int ECC_controlContinousFwd(int deviceHandle, int axis, Pointer<Integer> enable, int set) {
     return ECC_controlContinousFwd(deviceHandle, axis, Pointer.getPeer(enable), set);
   }
   @Convention(Convention.Style.StdCall)
@@ -541,8 +536,7 @@ public class EccLibrary
    *         <i>native declaration : lib\ecc100\ecc.h:366</i>
    */
   @Convention(Convention.Style.StdCall)
-  public static int ECC_controlContinousBkwd(int deviceHandle, int axis, Pointer<Integer> enable, int set)
-  {
+  public static int ECC_controlContinousBkwd(int deviceHandle, int axis, Pointer<Integer> enable, int set) {
     return ECC_controlContinousBkwd(deviceHandle, axis, Pointer.getPeer(enable), set);
   }
   @Convention(Convention.Style.StdCall)
@@ -681,17 +675,12 @@ public class EccLibrary
    *         <i>native declaration : lib\ecc100\ecc.h:448</i>
    */
   @Convention(Convention.Style.StdCall)
-  public static int ECC_getStatusConnected(int deviceHandle,
-                                           int axis,
-                                           Pointer<Integer> connected)
-  {
-    return ECC_getStatusConnected(deviceHandle,
-                                  axis,
-                                  Pointer.getPeer(connected));
+  public static int ECC_getStatusConnected(int deviceHandle, int axis, Pointer<Integer> connected) {
+    return ECC_getStatusConnected(deviceHandle, axis, Pointer.getPeer(connected));
   }
-
   @Convention(Convention.Style.StdCall)
   protected native static int ECC_getStatusConnected(int deviceHandle, int axis, @Ptr long connected);
+
 
   /**
    * @brief Reference position<br>
@@ -716,13 +705,12 @@ public class EccLibrary
    *         <i>native declaration : lib\ecc100\ecc.h:467</i>
    */
   @Convention(Convention.Style.StdCall)
-  public static int ECC_getReferencePosition(int deviceHandle, int axis, Pointer<Integer> reference)
-  {
+  public static int ECC_getReferencePosition(int deviceHandle, int axis, Pointer<Integer> reference) {
     return ECC_getReferencePosition(deviceHandle, axis, Pointer.getPeer(reference));
   }
-
   @Convention(Convention.Style.StdCall)
   protected native static int ECC_getReferencePosition(int deviceHandle, int axis, @Ptr long reference);
+
 
   /**
    * @brief Actor position<br>
@@ -744,8 +732,7 @@ public class EccLibrary
    *         <i>native declaration : lib\ecc100\ecc.h:484</i>
    */
   @Convention(Convention.Style.StdCall)
-  public static int ECC_getPosition(int deviceHandle, int axis, Pointer<Integer> position)
-  {
+  public static int ECC_getPosition(int deviceHandle, int axis, Pointer<Integer> position) {
     return ECC_getPosition(deviceHandle, axis, Pointer.getPeer(position));
   }
 
@@ -807,17 +794,10 @@ public class EccLibrary
   @Convention(Convention.Style.StdCall)
   public static int ECC_controlAutoReset(int deviceHandle, int axis, Pointer<Integer> enable, int set)
   {
-    return ECC_controlAutoReset(deviceHandle,
-                                axis,
-                                Pointer.getPeer(enable),
-                                set);
+    return ECC_controlAutoReset(deviceHandle, axis, Pointer.getPeer(enable), set);
   }
-
   @Convention(Convention.Style.StdCall)
-  protected native static int ECC_controlAutoReset(int deviceHandle,
-                                                   int axis,
-                                                   @Ptr long enable,
-                                                   int set);
+  protected native static int ECC_controlAutoReset(int deviceHandle, int axis, @Ptr long enable, int set);
 
   /**
    * @brief Target Range<br>
@@ -841,17 +821,9 @@ public class EccLibrary
    *         <i>native declaration : lib\ecc100\ecc.h:537</i>
    */
   @Convention(Convention.Style.StdCall)
-  public static int ECC_controlTargetRange(int deviceHandle,
-                                           int axis,
-                                           Pointer<Integer> range,
-                                           int set)
-  {
-    return ECC_controlTargetRange(deviceHandle,
-                                  axis,
-                                  Pointer.getPeer(range),
-                                  set);
+  public static int ECC_controlTargetRange(int deviceHandle, int axis, Pointer<Integer> range, int set) {
+    return ECC_controlTargetRange(deviceHandle, axis, Pointer.getPeer(range), set);
   }
-
   @Convention(Convention.Style.StdCall)
   protected native static int ECC_controlTargetRange(int deviceHandle,
                                                      int axis,
@@ -877,19 +849,12 @@ public class EccLibrary
    *         <i>native declaration : lib\ecc100\ecc.h:552</i>
    */
   @Convention(Convention.Style.StdCall)
-  public static int ECC_getStatusTargetRange(int deviceHandle,
-                                             int axis,
-                                             Pointer<Integer> target)
-  {
-    return ECC_getStatusTargetRange(deviceHandle,
-                                    axis,
-                                    Pointer.getPeer(target));
+  public static int ECC_getStatusTargetRange(int deviceHandle, int axis, Pointer<Integer> target) {
+    return ECC_getStatusTargetRange(deviceHandle, axis, Pointer.getPeer(target));
   }
-
   @Convention(Convention.Style.StdCall)
-  protected native static int ECC_getStatusTargetRange(int deviceHandle,
-                                                       int axis,
-                                                       @Ptr long target);
+  protected native static int ECC_getStatusTargetRange(int deviceHandle, int axis, @Ptr long target);
+
 
   /**
    * @brief Firmware version<br>
@@ -906,16 +871,12 @@ public class EccLibrary
    *         <i>native declaration : lib\ecc100\ecc.h:565</i>
    */
   @Convention(Convention.Style.StdCall)
-  public static int ECC_getFirmwareVersion(int deviceHandle,
-                                           Pointer<Integer> version)
-  {
-    return ECC_getFirmwareVersion(deviceHandle,
-                                  Pointer.getPeer(version));
+  public static int ECC_getFirmwareVersion(int deviceHandle, Pointer<Integer> version) {
+    return ECC_getFirmwareVersion(deviceHandle, Pointer.getPeer(version));
   }
-
   @Convention(Convention.Style.StdCall)
-  protected native static int ECC_getFirmwareVersion(int deviceHandle,
-                                                     @Ptr long version);
+  protected native static int ECC_getFirmwareVersion(int deviceHandle,@Ptr long version);
+
 
   /**
    * @brief Device id<br>
@@ -936,22 +897,15 @@ public class EccLibrary
    *         <i>native declaration : lib\ecc100\ecc.h:580</i>
    */
   @Convention(Convention.Style.StdCall)
-  public static int ECC_controlDeviceId(int deviceHandle,
-                                        Pointer<Integer> id,
-                                        int set)
-  {
-    return ECC_controlDeviceId(deviceHandle,
-                               Pointer.getPeer(id),
-                               set);
+  public static int ECC_controlDeviceId(int deviceHandle, Pointer<Integer> id, int set) {
+    return ECC_controlDeviceId(deviceHandle, Pointer.getPeer(id), set);
   }
-
   @Convention(Convention.Style.StdCall)
-  protected native static int ECC_controlDeviceId(int deviceHandle,
-                                                  @Ptr long id,
-                                                  int set);
+  protected native static int ECC_controlDeviceId(int deviceHandle, @Ptr long id, int set);
+
 
   /**
-   * @brief EOT status forward<br>
+   * @brief EOT - END OF TRAVEL - status forward<br>
    *        <br>
    *        Retrieves the status of the end of travel (EOT) detection in forward
    *        direction.<br>
@@ -968,22 +922,15 @@ public class EccLibrary
    *         <i>native declaration : lib\ecc100\ecc.h:594</i>
    */
   @Convention(Convention.Style.StdCall)
-  public static int ECC_getStatusEotFwd(int deviceHandle,
-                                        int axis,
-                                        Pointer<Integer> EotDetected)
-  {
-    return ECC_getStatusEotFwd(deviceHandle,
-                               axis,
-                               Pointer.getPeer(EotDetected));
+  public static int ECC_getStatusEotFwd(int deviceHandle, int axis, Pointer<Integer> EotDetected) {
+    return ECC_getStatusEotFwd(deviceHandle, axis, Pointer.getPeer(EotDetected));
   }
-
   @Convention(Convention.Style.StdCall)
-  protected native static int ECC_getStatusEotFwd(int deviceHandle,
-                                                  int axis,
-                                                  @Ptr long EotDetected);
+  protected native static int ECC_getStatusEotFwd(int deviceHandle, int axis, @Ptr long EotDetected);
+
 
   /**
-   * @brief EOT status backward<br>
+   * @brief EOT - END OF TRAVEL - status backward<br>
    *        <br>
    *        Retrieves the status of the end of travel (EOT) detection in
    *        backward direction.<br>
@@ -1000,19 +947,12 @@ public class EccLibrary
    *         <i>native declaration : lib\ecc100\ecc.h:607</i>
    */
   @Convention(Convention.Style.StdCall)
-  public static int ECC_getStatusEotBkwd(int deviceHandle,
-                                         int axis,
-                                         Pointer<Integer> EotDetected)
-  {
-    return ECC_getStatusEotBkwd(deviceHandle,
-                                axis,
-                                Pointer.getPeer(EotDetected));
+  public static int ECC_getStatusEotBkwd(int deviceHandle, int axis, Pointer<Integer> EotDetected) {
+    return ECC_getStatusEotBkwd(deviceHandle, axis, Pointer.getPeer(EotDetected));
   }
-
   @Convention(Convention.Style.StdCall)
-  protected native static int ECC_getStatusEotBkwd(int deviceHandle,
-                                                   int axis,
-                                                   @Ptr long EotDetected);
+  protected native static int ECC_getStatusEotBkwd(int deviceHandle, int axis, @Ptr long EotDetected);
+
 
   /**
    * @brief Output deactivate on EOT<br>
@@ -1029,26 +969,19 @@ public class EccLibrary
    *          false: Output stays active on EOT<br>
    * @param set
    *          1: Send the supplied values to the controller<br>
-   *          0: Ignore input; only retreive the results<br>
+   *          0: Ignore input; only retrieve the results<br>
    * @return Result of function<br>
    *         Original signature :
    *         <code>__attribute__((dllimport)) Int32 ECC_controlEotOutputDeactive(Int32, Int32, Bln32*, Bln32)</code><br>
    *         <i>native declaration : lib\ecc100\ecc.h:623</i>
    */
   @Convention(Convention.Style.StdCall)
-  public static int ECC_controlEotOutputDeactive(int deviceHandle, int axis, Pointer<Integer> enable, int set)
-  {
-    return ECC_controlEotOutputDeactive(deviceHandle,
-                                        axis,
-                                        Pointer.getPeer(enable),
-                                        set);
+  public static int ECC_controlEotOutputDeactive(int deviceHandle, int axis, Pointer<Integer> enable, int set) {
+    return ECC_controlEotOutputDeactive(deviceHandle, axis, Pointer.getPeer(enable), set);
   }
-
   @Convention(Convention.Style.StdCall)
-  protected native static int ECC_controlEotOutputDeactive(int deviceHandle,
-                                                           int axis,
-                                                           @Ptr long enable,
-                                                           int set);
+  protected native static int ECC_controlEotOutputDeactive(int deviceHandle, int axis, @Ptr long enable, int set);
+
 
   /**
    * @brief Fixed output voltage<br>
@@ -1070,22 +1003,12 @@ public class EccLibrary
    *         <i>native declaration : lib\ecc100\ecc.h:642</i>
    */
   @Convention(Convention.Style.StdCall)
-  public static int ECC_controlFixOutputVoltage(int deviceHandle,
-                                                int axis,
-                                                Pointer<Integer> voltage,
-                                                int set)
-  {
-    return ECC_controlFixOutputVoltage(deviceHandle,
-                                       axis,
-                                       Pointer.getPeer(voltage),
-                                       set);
+  public static int ECC_controlFixOutputVoltage(int deviceHandle, int axis, Pointer<Integer> voltage, int set) {
+    return ECC_controlFixOutputVoltage(deviceHandle, axis, Pointer.getPeer(voltage), set);
   }
-
   @Convention(Convention.Style.StdCall)
-  protected native static int ECC_controlFixOutputVoltage(int deviceHandle,
-                                                          int axis,
-                                                          @Ptr long voltage,
-                                                          int set);
+  protected native static int ECC_controlFixOutputVoltage(int deviceHandle, int axis, @Ptr long voltage, int set);
+
 
   /**
    * @brief Trigger input enable<br>

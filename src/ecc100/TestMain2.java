@@ -22,16 +22,16 @@ public class TestMain2 {
             double curPos = presentAxis.getCurrentPosition();
             System.out.println("current position is " + curPos);
             presentAxis.goToPosition(curPos + 100,maxAcceptableMismatch);
-            System.out.println(presentAxis.getCurrentPosition() + " is the position after using the 'goToPosition' method");
+            System.out.println(presentAxis.getCurrentPosition() + " is the position after 'goToPosition' method for reaching " + (curPos + 100));
             presentAxis.goToPosition(-1000,maxAcceptableMismatch);
-            curPos = presentAxis.getCurrentPosition();
 
-            System.out.println(presentAxis.getCurrentPosition() + " is the position after using the 'goToPosition' method");
+            System.out.println(presentAxis.getCurrentPosition() + " is the position after 'goToPosition' method for reaching " + (-1000));
             //.goToPositionAndWait(curPos - 1000,maxAcceptableMismatch,100, TimeUnit.MILLISECONDS);
             //System.out.println(presentAxis.getCurrentPosition() + " is the position after using the 'goToPositionAndWait' method");
+
         }
 
-        // TODO: 1) Reference position initialization; 2) goAndWaitFunction to rewrite
+        // TODO: 1) goAndWaitAtPosition - should be rewritten? Purpose of the method? 2) Implementation of controlling interfaces
 
 
 

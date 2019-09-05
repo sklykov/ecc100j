@@ -29,8 +29,8 @@ public class ECC100Axis {
     super(); // just a redundant piece of code or not?
     mPointerToDeviceHandle.set(pECC100Controller.getControllerDeviceHandle(pDeviceIndex));
     mAxisIndex = pAxisIndex;
-    // stopOnEOT(true); // ? Just looking through the code and found this commented out calling function... Why did it turn commented out?
-    getReferencePosition();
+    stopOnEOT(true); // It turns that if it works properly it should be helpful (stopping continuous movement when mechanical stop reached)
+    // getReferencePosition(); // Redundant?
   }
 
   private int isMovingState(Pointer<Integer> pPointerToDeviceHandle, int i) {
@@ -68,13 +68,18 @@ public class ECC100Axis {
    * Force stage to go to "0 um" position
    */
   public void home() {
-    getReferencePosition(); // The set reference position isn't used further explicitly.
-                            // But maybe implicitly it influences somehow to the next method
-    goToPosition(0, cGoToEpsilon);
+    // getReferencePosition(); // The set reference position isn't used further explicitly. I've decided to comment it out as redundant...
+    // To prevent misuse if an actuator (axis) hasn't been properly initialized
+    stopOnEOT(true); // additional safety control
+    if (isReferencePositionValid()) {
+      goToPosition(0, cGoToEpsilon); // So, the command to go to a home position "0" would be performed if RefPos is valid
+    }
+
   }
 
   /**
    * Activation of controlling of approaching to the assigned position
+   * Nevertheless, it depends on some native method calling and functionality is implicit
    */
   public void enable() {
     controlAproachToTargetPosition(true);
@@ -90,7 +95,8 @@ public class ECC100Axis {
   }
 
   /**
-   * ? - functionality, could be some issues with synchronization, because this method doesn't implement the timeout functionality
+   * So, so far this function working as expected: <br>
+   *     It moves an actuator (linear stage) to the assigned position and keeps going until it reaches it. <br>
    * @param pTargetPositionInMicrons - readable name parameter
    * @param pEpsilonInMicrons - maximum allowed difference between the target position and the actual one
    */
@@ -100,11 +106,12 @@ public class ECC100Axis {
     double diff = Math.abs(pTargetPositionInMicrons - getCurrentPosition());
     boolean conditionReached = (diff > pEpsilonInMicrons); // Actual condition of stopping movement
     // System.out.println(diff); System.out.println(condition);
-    // Forcing of the controlled actuator to reach the assigned position - ?
+    // Forcing of the controlled actuator to reach the assigned position
     if (conditionReached){
       while (conditionReached){
         setTargetPosition(pTargetPositionInMicrons);
         diff = Math.abs(pTargetPositionInMicrons - getCurrentPosition());
+        stopOnEOT(true); // additional insurance
         conditionReached = (diff > pEpsilonInMicrons);
       }
     }
@@ -119,7 +126,7 @@ public class ECC100Axis {
   }
 
   /**
-   * In theory, moving stage and waiting on reached position method
+   * In theory, moving stage and waiting on reached position ...
    * @param pTargetPositionInMicrons - readable name
    * @param pEpsilonInMicrons - maximal allowed absolute difference between actual and desired positions
    * @param pTimeOut - actually, waiting position
@@ -135,23 +142,25 @@ public class ECC100Axis {
   }
 
   public boolean hasArrived() {
-    return abs(getCurrentPosition() - mLastTargetPositionInMicrons) < pLastEpsilonInMicrons;
+    return (abs(getCurrentPosition() - mLastTargetPositionInMicrons) < pLastEpsilonInMicrons);
   }
 
+  /**
+   * ? - I ain't sure about purpose of this method... and it has been rewritten
+   * @param pTargetPositionInMicrons
+   * @param pEpsilonInMicrons
+   * @param pTimeOut
+   * @param pTimeUnit
+   * @return
+   */
   private boolean waitToArriveAt(double pTargetPositionInMicrons, double pEpsilonInMicrons, long pTimeOut, TimeUnit pTimeUnit) {
     if (isLocked())
       return false;
 
     long lDeadLine = System.nanoTime() + TimeUnit.NANOSECONDS.convert(pTimeOut, pTimeUnit);
-    //System.out.println("Ready: " + isReady());
-    //System.out.println("Arrived: " + hasArrived());
-    //System.out.println("Moving: " + isMoving());
-
     // below is the main change - the condition for while case (until reaching the position) + establishing the pause for the stage (Thread.sleep)
     while (isMoving() && (abs(pTargetPositionInMicrons - getCurrentPosition()) > pEpsilonInMicrons)) {
       try {
-        //System.out.println("isMoving=" + isMoving());
-        //System.out.println("getCurrentPosition=" + getCurrentPosition());
         Thread.sleep(100);
       }
       catch (InterruptedException e) {
@@ -163,24 +172,33 @@ public class ECC100Axis {
     return true;
   }
 
+  /**
+   * Actual command to move
+   * @param lTargetPositionInMicrons - readable name
+   */
   public void setTargetPosition(double lTargetPositionInMicrons) {
+    stopOnEOT(true); // additional insurance
     Pointer<Integer> lPointerToTarget = Pointer.allocateInt(); // create sample class to transfer data to an actuator
     lPointerToTarget.set((int) (lTargetPositionInMicrons * 1000 + getReferencePosition() * 1000)); // actual method (set - in "Pointer.class")
-    int result = EccLibrary.ECC_controlTargetPosition(mPointerToDeviceHandle.getInt(), mAxisIndex,
-            lPointerToTarget,  1); // as an idea: it returns some integer as the result of performing of this method...
+    EccLibrary.ECC_controlTargetPosition(mPointerToDeviceHandle.getInt(), mAxisIndex, lPointerToTarget,  1); // returns some integer as a result
     // System.out.println("result of moving is: " + result); // SEEMS THAT 0 - is the result then axis just moving without errors
     lPointerToTarget.release();
     printLastError();
   }
 
+  /**
+   * Controlling the continuous movement of
+   * @param pEnable - move the stage!
+   * @param pForward - true - forward, false - backward
+   */
   public void continuous(boolean pEnable, boolean pForward) {
     Pointer<Integer> lPointerEnable = Pointer.allocateInt();
     lPointerEnable.set(pEnable ? 1 : 0);
+    stopOnEOT(true); // In general, this method should stop continuous movement at the mechanical limit of movement
     if (pForward)
       EccLibrary.ECC_controlContinousFwd(mPointerToDeviceHandle.getInt(), mAxisIndex, lPointerEnable, 1);
     else
       EccLibrary.ECC_controlContinousBkwd(mPointerToDeviceHandle.getInt(), mAxisIndex, lPointerEnable, 1);
-
     lPointerEnable.release();
     printLastError();
   }
@@ -201,6 +219,10 @@ public class ECC100Axis {
     printLastError();
   }
 
+  /**
+   * Stops continuous movement after reaching a mechanical limitation of it
+   * @param pStop = true - enable, false - disable
+   */
   public void stopOnEOT(boolean pStop) {
     Pointer<Integer> lPointerToStopOnEOT = Pointer.allocateInt();
     lPointerToStopOnEOT.set(pStop ? 1 : 0);
@@ -259,8 +281,6 @@ public class ECC100Axis {
    * @return double referencePosition in microns
    */
   public double getReferencePosition() {
-    if (!isReferencePositionValid())
-      return Integer.MAX_VALUE; // to show that reference position isn't valid
     Pointer<Integer> lReferencePosition = Pointer.allocateInt();
     EccLibrary.ECC_getReferencePosition(mPointerToDeviceHandle.getInt(), mAxisIndex, lReferencePosition);
     int lReferencePositionInt = lReferencePosition.getInt();

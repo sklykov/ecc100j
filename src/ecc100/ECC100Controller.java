@@ -90,12 +90,10 @@ public class ECC100Controller {
     for (final ECC100Axis lECC100Axis : mDeviceIdAxisIndexToAxisMap.values()) {
       lECC100Axis.home();
     }
-
     for (final Pointer<Integer> lPointerToControllerDeviceHandle : mPointerToDeviceHandleList) {
       EccLibrary.ECC_Close(lPointerToControllerDeviceHandle.getInt());
       lPointerToControllerDeviceHandle.release();
     }
-
     mIsOpened = false;
   }
 
